@@ -1,0 +1,14 @@
+{
+  "name": "vahubtraining",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bilingual virtual assistant training hub",
+  "scripts": {
+    "check": "node scripts/check.cjs",
+    "format": "prettier --write site scripts README.md SECURITY.md .github/workflows/pages.yml package.json",
+    "format:check": "prettier --check site scripts README.md SECURITY.md .github/workflows/pages.yml package.json"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
+  }
+}
