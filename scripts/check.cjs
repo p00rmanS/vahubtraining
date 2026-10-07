@@ -26,7 +26,7 @@ for (const filename of scripts) {
     vm.runInContext(source, context);
 }
 const records = vm.runInContext("lessons", context);
-assert.equal(records.length, 57);
+assert.equal(records.length, 61);
 assert.equal(new Set(records.map((record) => record.id)).size, records.length);
 for (const record of records) {
   assert(
@@ -55,5 +55,5 @@ assert(
 assert(!fs.existsSync(path.join(site, ".env")));
 assert(!fs.existsSync(path.join(site, ".openai")));
 console.log(
-  "Passed: 57 lessons, bilingual content, syntax, assets, CSP, storage validation, and common secret patterns.",
+  "Passed: 61 lessons, bilingual content, syntax, assets, CSP, storage validation, and common secret patterns.",
 );
