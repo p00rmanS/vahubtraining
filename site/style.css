@@ -1804,3 +1804,31 @@ dd {
     box-shadow: none;
   }
 }
+
+/* ---------- 10. Daily session ---------- */
+.session-card {
+  position: relative;
+  margin: 8px 0 28px;
+  padding: 26px 28px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--red);
+}
+.session-card h2 {
+  margin-bottom: 8px;
+}
+.session-card .toolbar {
+  margin-bottom: 0;
+}
+.session-q h2 {
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  margin-top: 14px;
+}
+.session-q .toolbar {
+  align-items: center;
+}
+.session-q fieldset {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+}

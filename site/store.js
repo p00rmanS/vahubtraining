@@ -71,6 +71,19 @@ function sanitizeState(raw) {
             : null,
       };
     }
+  const reviews = {};
+  if (isPlainObject(source.reviews))
+    for (const [key, value] of Object.entries(source.reviews))
+      if (
+        lessonById.has(key) &&
+        isPlainObject(value) &&
+        Number.isInteger(value.box) &&
+        value.box >= 1 &&
+        value.box <= 5 &&
+        typeof value.due === "string" &&
+        DAY_KEY.test(value.due)
+      )
+        reviews[key] = { box: value.box, due: value.due };
   const activity = Array.isArray(source.activity)
     ? [
         ...new Set(
@@ -94,6 +107,7 @@ function sanitizeState(raw) {
       ? [...new Set(source.portfolio.filter((id) => lessonById.has(id)))]
       : [],
     exams: examResults,
+    reviews,
     activity,
     pace: source.pace === "24" ? "24" : "12",
     lastLesson: lessonById.has(source.lastLesson) ? source.lastLesson : null,

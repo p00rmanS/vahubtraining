@@ -5,11 +5,32 @@
 const Motion = (() => {
   /** Cross-fade between views with the View Transitions API when available. */
   function transition(update) {
-    if (prefersReducedMotion() || !document.startViewTransition) {
+    if (
+      prefersReducedMotion() ||
+      !document.startViewTransition ||
+      document.visibilityState !== "visible"
+    ) {
       update();
       return;
     }
-    document.startViewTransition(update);
+    // The transition API can stall (throttled frames, embedded webviews), so
+    // guarantee the view still renders even if its callback is delayed.
+    let ran = false;
+    const run = () => {
+      if (ran) return;
+      ran = true;
+      update();
+    };
+    const fallback = setTimeout(run, 300);
+    try {
+      document.startViewTransition(() => {
+        clearTimeout(fallback);
+        run();
+      });
+    } catch {
+      clearTimeout(fallback);
+      run();
+    }
   }
 
   /**

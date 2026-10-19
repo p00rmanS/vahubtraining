@@ -235,6 +235,22 @@ assert.equal(
   ),
   0,
 );
+const reviewState = clean(
+  vm.runInContext(
+    `sanitizeState({
+      reviews: {
+        "0-0": { box: 3, due: "2026-10-20" },
+        "0-1": { box: 9, due: "2026-10-20" },
+        "0-2": { box: 2, due: "tomorrow" },
+        bogus: { box: 1, due: "2026-10-20" },
+      },
+    }).reviews`,
+    store,
+  ),
+);
+assert.deepEqual(reviewState, { "0-0": { box: 3, due: "2026-10-20" } });
+assert.equal(vm.runInContext('addDays("2026-10-31", 2)', store), "2026-11-02");
+assert.equal(vm.runInContext('addDays("2026-12-31", 1)', store), "2027-01-01");
 for (const exam of vm.runInContext("exams", context)) {
   assert(
     exam.criteria.length && exam.tasks.length && exam.key,
