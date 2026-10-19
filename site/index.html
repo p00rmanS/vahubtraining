@@ -6,7 +6,18 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#f3eee2"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#15140f"
+      media="(prefers-color-scheme: dark)"
     />
     <title>VA Academy · Zero to Advanced</title>
     <meta
@@ -17,38 +28,66 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23132c48'/%3E%3Cpath d='M7 10l9 14 9-14M11 10l5 8 5-8' fill='none' stroke='%2349e0ad' stroke-width='3'/%3E%3C/svg%3E"
     />
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <aside>
-      <a class="brand" href="#learn"><span class="mark">VA</span> Academy</a>
-      <p class="eyebrow">YOUR NEXT CHAPTER</p>
+    <div
+      id="read-progress"
+      class="read-progress"
+      hidden
+      aria-hidden="true"
+    ></div>
+    <header class="masthead">
+      <a class="wordmark" href="#learn"
+        ><span class="wm-box">VA</span><span class="wm-text">Academy</span></a
+      >
       <nav aria-label="Main navigation">
-        <a href="#learn">Learning path</a><a href="#roadmap">12-week roadmap</a
-        ><a href="#library">Template library</a
-        ><a href="#practice">Client simulations</a
-        ><a href="#glossary">VA glossary</a>
+        <a href="#learn">Learn</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#exam">Mock trials</a>
+        <a href="#library">Templates</a>
+        <a href="#practice">Simulations</a>
+        <a href="#glossary">Glossary</a>
       </nav>
-      <div class="side-bottom">
-        <p>Small steps. Real skills.</p>
-        <p class="muted">
-          Start with no experience. Build confidence through practice.
+      <div class="masthead-tools">
+        <p class="tally">
+          <strong id="side-count">0 / 0</strong><span>lessons done</span>
         </p>
+        <button
+          class="theme-toggle"
+          data-action="toggle-theme"
+          aria-label="Switch between light and dark theme"
+        >
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"
+            />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 14.5A8.5 8.5 0 019.5 4 8.5 8.5 0 1020 14.5z" />
+          </svg>
+        </button>
       </div>
-    </aside>
+    </header>
     <main id="main" tabindex="-1">
-      <header>
-        <span>VIRTUAL ASSISTANT TRAINING</span
-        ><span class="badge">Self-paced · Beginner friendly</span>
-      </header>
       <div id="app"></div>
       <footer>
-        Practice with fictional information. Progress and notes save on this
-        browser only. Training does not guarantee employment or income.
+        <p>
+          Practice with fictional information. Progress and notes save on this
+          browser only. Training does not guarantee employment or income.
+        </p>
+        <p lang="fil">
+          Gumamit ng gawa-gawang impormasyon sa pag-practice. Sa browser mo lang
+          naka-save ang progress at notes. Walang garantiya ng trabaho o kita.
+        </p>
       </footer>
     </main>
     <div id="toast" role="status"></div>
+    <div id="fx" aria-hidden="true"></div>
     <script src="course.js"></script>
     <script src="course-extra.js"></script>
     <script src="course-mastery.js"></script>
@@ -56,6 +95,28 @@
     <script src="mentoring.js"></script>
     <script src="course-comprehensive.js"></script>
     <script src="course-operations.js"></script>
+    <script src="course-elite.js"></script>
+    <script src="course-specialties.js"></script>
+    <script src="course-career.js"></script>
+    <script src="course-automation.js"></script>
+    <script src="course-ecommerce.js"></script>
+    <script src="course-office.js"></script>
+    <script src="course-growth.js"></script>
+    <script src="course-adminpro.js"></script>
+    <script src="taglish-extra.js"></script>
+    <script src="taglish-1.js"></script>
+    <script src="taglish-2.js"></script>
+    <script src="taglish-3.js"></script>
+    <script src="taglish-4.js"></script>
+    <script src="taglish-5.js"></script>
+    <script src="taglish-6.js"></script>
+    <script src="taglish-7.js"></script>
+    <script src="taglish-pages.js"></script>
+    <script src="taglish-link.js"></script>
+    <script src="exams.js"></script>
+    <script src="util.js"></script>
+    <script src="store.js"></script>
+    <script src="motion.js"></script>
     <script src="app.js"></script>
     <script src="lesson-navigation.js"></script>
   </body>

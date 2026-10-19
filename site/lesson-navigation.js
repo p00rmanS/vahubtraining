@@ -1,15 +1,32 @@
-// Always-reachable navigation; uses the same lesson routes as the lesson picker.
+"use strict";
+// Always-reachable previous/next bar plus Left/Right arrow shortcuts.
+
 const lessonBar = document.createElement("nav");
 lessonBar.className = "lesson-navigation";
 lessonBar.setAttribute("aria-label", "Previous and next lessons");
 lessonBar.hidden = true;
 document.body.appendChild(lessonBar);
-function currentLessonIndex() {
-  return lessons.findIndex((l) => "#lesson/" + l.id === location.hash);
+
+const TEXT_CONTROLS =
+  'input,textarea,select,[contenteditable]:not([contenteditable="false"]),[role="textbox"],[role="combobox"],[role="slider"],[role="listbox"],[role="menu"],[role="tablist"]';
+
+const currentLessonIndex = () =>
+  lessons.findIndex((l) => "#lesson/" + l.id === location.hash);
+
+function stepButton(kind, target) {
+  const previous = kind === "previous";
+  const label = previous ? "Previous" : "Next";
+  const edge = previous ? "first" : "last";
+  const aria = target
+    ? `${label} lesson: ${target.title}`
+    : `${label} lesson unavailable — ${edge} lesson`;
+  const title = target ? target.title : `You’re at the ${edge} lesson`;
+  return `<button data-step="${kind}" ${target ? "" : "disabled"} aria-keyshortcuts="Arrow${previous ? "Left" : "Right"}" aria-label="${esc(aria)}"><span class="nav-label">${previous ? "← " : ""}${label}${previous ? "" : " →"}</span><span class="nav-title">${esc(title)}</span></button>`;
 }
+
 function refreshLessonBar() {
   const index = currentLessonIndex();
-  const focusedStep = lessonBar.contains(document.activeElement)
+  const focused = lessonBar.contains(document.activeElement)
     ? document.activeElement.dataset.step
     : null;
   lessonBar.hidden = index < 0;
@@ -18,28 +35,28 @@ function refreshLessonBar() {
     lessonBar.replaceChildren();
     return;
   }
-  const previous = lessons[index - 1],
-    next = lessons[index + 1];
-  lessonBar.innerHTML = `<button data-step="previous" ${previous ? "" : "disabled"} aria-keyshortcuts="ArrowLeft" aria-label="${previous ? "Previous lesson: " + esc(previous.title) : "Previous lesson unavailable — first lesson"}"><span class="nav-label">Previous</span><span class="nav-title">${previous ? esc(previous.title) : "You’re at the first lesson"}</span></button><div class="nav-position"><a href="#learn">All lessons</a><span>${index + 1} / ${lessons.length}</span><span class="keyboard-hint">Left / Right arrow keys</span></div><button data-step="next" ${next ? "" : "disabled"} aria-keyshortcuts="ArrowRight" aria-label="${next ? "Next lesson: " + esc(next.title) : "Next lesson unavailable — last lesson"}"><span class="nav-label">Next</span><span class="nav-title">${next ? esc(next.title) : "You’re at the last lesson"}</span></button>`;
-  if (focusedStep) {
-    const button = lessonBar.querySelector(`[data-step="${focusedStep}"]`);
-    if (button && !button.disabled) button.focus({ preventScroll: true });
-    else lessonBar.querySelector("a").focus({ preventScroll: true });
+  lessonBar.innerHTML = `${stepButton("previous", lessons[index - 1])}<div class="nav-position"><a href="#learn">All lessons</a><span>${index + 1} / ${lessons.length}</span><span class="keyboard-hint">Left / Right arrow keys</span></div>${stepButton("next", lessons[index + 1])}`;
+  if (focused) {
+    const button = lessonBar.querySelector(`[data-step="${focused}"]`);
+    (button && !button.disabled ? button : lessonBar.querySelector("a")).focus({
+      preventScroll: true,
+    });
   }
 }
+
 function navigateLessonStep(direction) {
-  const index = currentLessonIndex();
-  if (index < 0) return false;
-  const next = lessons[index + direction];
-  if (!next) return false;
-  location.hash = "lesson/" + next.id;
+  const target = lessons[currentLessonIndex() + direction];
+  if (currentLessonIndex() < 0 || !target) return false;
+  location.hash = "lesson/" + target.id;
   return true;
 }
+
 lessonBar.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-step]");
   if (button && !button.disabled)
     navigateLessonStep(button.dataset.step === "previous" ? -1 : 1);
 });
+
 document.addEventListener("keydown", (event) => {
   if (
     event.defaultPrevented ||
@@ -48,22 +65,20 @@ document.addEventListener("keydown", (event) => {
     event.altKey ||
     event.ctrlKey ||
     event.metaKey ||
-    event.shiftKey
+    event.shiftKey ||
+    (event.key !== "ArrowLeft" && event.key !== "ArrowRight")
   )
     return;
-  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
   const target = event.target;
   if (
     target instanceof Element &&
-    (target.closest(
-      'input,textarea,select,[contenteditable]:not([contenteditable="false"]),[role="textbox"],[role="combobox"],[role="slider"],[role="listbox"],[role="menu"],[role="tablist"]',
-    ) ||
-      target.isContentEditable)
+    (target.closest(TEXT_CONTROLS) || target.isContentEditable)
   )
     return;
   if (window.getSelection()?.toString()) return;
   if (navigateLessonStep(event.key === "ArrowLeft" ? -1 : 1))
     event.preventDefault();
 });
-window.addEventListener("hashchange", refreshLessonBar);
+
+document.addEventListener("va:rendered", refreshLessonBar);
 refreshLessonBar();
