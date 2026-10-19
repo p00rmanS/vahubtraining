@@ -104,6 +104,146 @@ const SKILL_TEXT = [
   "Advanced: manage scope and capacity, write an SOP, and test an automation safely.",
 ];
 
+/* ---------- Daily review session (spaced repetition) ---------- */
+
+const REVIEW_DAYS = [1, 2, 4, 8, 16];
+const SESSION_SIZE = 5;
+let session = null;
+
+/** Finished lessons whose review is due, never-reviewed ones first, then oldest. */
+function dueLessons() {
+  const today = dayKey();
+  return lessons
+    .filter((l) => isDone(l.id) && (state.reviews[l.id]?.due ?? today) <= today)
+    .sort((a, b) =>
+      (state.reviews[a.id]?.due ?? "").localeCompare(
+        state.reviews[b.id]?.due ?? "",
+      ),
+    );
+}
+
+function nextReviewDate() {
+  const today = dayKey();
+  const upcoming = lessons
+    .filter((l) => isDone(l.id) && state.reviews[l.id]?.due > today)
+    .map((l) => state.reviews[l.id].due)
+    .sort();
+  return upcoming[0] ?? null;
+}
+
+function recordReview(id, correct) {
+  const previous = state.reviews[id]?.box ?? 1;
+  const box = correct ? Math.min(previous + 1, 5) : 1;
+  state.reviews[id] = {
+    box,
+    due: addDays(dayKey(), correct ? REVIEW_DAYS[box - 1] : 1),
+  };
+}
+
+function startSession() {
+  session = {
+    ids: dueLessons()
+      .slice(0, SESSION_SIZE)
+      .map((l) => l.id),
+    index: 0,
+    correct: 0,
+    answered: false,
+    choice: null,
+    finished: false,
+  };
+  if (!session.ids.length) session.finished = true;
+}
+
+function emptySessionCard() {
+  return `<section class="session-card reveal">
+      <p class="kicker">Daily session</p>
+      <h2>Your daily session is waiting</h2>
+      <p>Finish your first lesson and your sessions will appear here.</p>
+      ${tl("Tapusin ang una mong lesson at lalabas dito ang mga daily session mo.")}
+      <div class="toolbar"><button class="cta" data-action="browse">Browse courses${ICONS.arrow}</button></div>
+    </section>`;
+}
+
+function sessionCard() {
+  if (!completedCount()) return emptySessionCard();
+  const due = dueLessons().length;
+  const next = nextReviewDate();
+  const ready = Math.min(due, SESSION_SIZE);
+  return `<section class="session-card reveal">
+      <p class="kicker">Daily session</p>
+      <h2>${due ? `${ready} review question${ready === 1 ? "" : "s"} ready` : "You are all caught up"}</h2>
+      <p>${due ? "A few minutes of review now keeps what you learned from fading." : next ? `Your next review is ready on ${esc(next)}.` : "Finish more lessons to add review questions."}</p>
+      ${tl(due ? "Ilang minutong review ngayon para hindi mawala ang natutunan mo." : "Tapos na ang review mo ngayon. Bumalik bukas o tapusin ang susunod na lesson.")}
+      <div class="toolbar">${due ? `<button class="cta" data-action="start-session">Start today's session${ICONS.arrow}</button>` : `<button data-action="browse">Browse courses</button>`}</div>
+    </section>`;
+}
+
+function sessionPage() {
+  if (!session) startSession();
+  if (!completedCount()) {
+    app.innerHTML = `${pageIntro("Daily review.", "A short session of questions from lessons you have finished.")}${emptySessionCard()}`;
+    return;
+  }
+  if (session.finished && !session.ids.length) {
+    app.innerHTML = `${pageIntro("Daily review.", "A short session of questions from lessons you have finished.")}${sessionCard()}`;
+    return;
+  }
+  const total = session.ids.length;
+  if (session.finished) {
+    app.innerHTML = `${pageIntro("Session complete.", `You answered ${session.correct} of ${total} correctly.`)}
+      <section class="session-card reveal">
+        <p class="kicker">Result</p>
+        <h2>${session.correct === total ? "Perfect session." : "Nice work. Keep going."}</h2>
+        <p>Questions you missed come back tomorrow. Ones you got right come back later, after a longer gap.</p>
+        ${tl("Babalik bukas ang mga namali mo. Ang mga tama ay babalik nang mas matagal, para tumagal sa isip mo.")}
+        <div class="toolbar"><button class="cta" data-action="browse">Back to courses${ICONS.arrow}</button></div>
+      </section>`;
+    return;
+  }
+  const l = lessonById.get(session.ids[session.index]);
+  const picked = session.choice;
+  app.innerHTML = `${pageIntro("Daily review.", "Answer from memory first, then check. There is no penalty for a wrong answer.")}
+    <section class="card session-q reveal">
+      <p class="kicker">Question ${session.index + 1} of ${total} · from "${esc(l.title)}"</p>
+      ${bar(session.index / total)}
+      <h2>${esc(l.question)}</h2>
+      <fieldset>${l.options
+        .map(
+          (_, i) =>
+            `<label class="option ${session.answered && picked === i ? (i === l.answer ? "is-correct" : "is-wrong") : ""}"><input type="radio" name="session-answer" value="${i}" ${picked === i ? "checked" : ""} ${session.answered ? "disabled" : ""}><span>${esc(l.options[i])}</span></label>`,
+        )
+        .join("")}</fieldset>
+      <div id="session-result" role="status">${session.answered ? quizVerdict(l, picked) : ""}</div>
+      <div class="toolbar">${session.answered ? `<button class="primary" data-action="session-next">${session.index + 1 === total ? "See result" : "Next question"}${ICONS.arrow}</button>` : `<button data-action="session-check">Check answer</button>`}<a href="#lesson/${l.id}">Open the lesson</a></div>
+    </section>`;
+}
+
+function sessionCheck() {
+  const picked = $('input[name="session-answer"]:checked');
+  if (!session || session.answered || !picked) {
+    toast("Choose an answer first");
+    return;
+  }
+  const l = lessonById.get(session.ids[session.index]);
+  const choice = Number(picked.value);
+  const correct = choice === l.answer;
+  session.choice = choice;
+  session.answered = true;
+  if (correct) session.correct++;
+  recordReview(l.id, correct);
+  persist();
+  rerender('[data-action="session-next"]');
+}
+
+function sessionNext() {
+  if (!session?.answered) return;
+  session.index++;
+  session.answered = false;
+  session.choice = null;
+  if (session.index >= session.ids.length) session.finished = true;
+  rerender("h1");
+}
+
 function bestExamPercent() {
   const percents = exams
     .map((exam) => examSummary(exam))
@@ -188,8 +328,9 @@ function home() {
       <p>${esc(next.goal)}</p>
       <div class="toolbar"><button class="cta" data-action="open-lesson" data-id="${next.id}">${started ? "Continue learning" : "Start lesson 1"}${ICONS.arrow}</button></div>
     </section>
+    ${sessionCard()}
     ${statsAndBadges()}
-    <div class="section-head reveal">
+    <div class="section-head reveal" id="contents">
       <h2>Contents</h2>
       <div><p class="muted">${modules.length} chapters · ${lessons.length} lessons</p><button data-action="scroll-to" data-id="lesson-directory">Find a lesson</button></div>
     </div>
@@ -513,6 +654,7 @@ function filterGlossary() {
 const ROUTES = {
   learn: { view: home, title: "Learning path" },
   roadmap: { view: roadmap, title: "12-week roadmap" },
+  session: { view: sessionPage, title: "Daily review" },
   portfolio: { view: portfolioPage, title: "Portfolio tracker" },
   exam: { view: examPage, title: "Mock trials" },
   library: { view: library, title: "Template library" },
@@ -546,6 +688,7 @@ function updateChrome(route) {
 function render({ animate = true } = {}) {
   stopExamTimer();
   const route = currentRoute();
+  if (route !== "session" && session?.finished) session = null;
   if (route.startsWith("lesson/")) lesson(route.slice(7));
   else (ROUTES[route] || ROUTES.learn).view();
   const heading = $("h1", app);
@@ -725,6 +868,19 @@ const ACTIONS = {
       toast("Notes saved on this browser");
       setSaveStatus("Saved on this browser");
     } else toast("Browser storage unavailable. Export your progress.");
+  },
+  "start-session": () => {
+    session = null;
+    location.hash = "session";
+  },
+  "session-check": sessionCheck,
+  "session-next": sessionNext,
+  browse: () => {
+    if (currentRoute() === "learn")
+      document
+        .getElementById("contents")
+        ?.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+    else location.hash = "learn";
   },
   "start-timer": (el) => startExamTimer(el.dataset.id),
   "stop-timer": (el) => {

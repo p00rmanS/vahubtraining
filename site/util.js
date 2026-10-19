@@ -58,3 +58,9 @@ function currentStreak(days, today = new Date()) {
   }
   return streak;
 }
+
+/** Add whole days to a YYYY-MM-DD key and return a new key. */
+function addDays(key, days) {
+  const [y, m, d] = key.split("-").map(Number);
+  return dayKey(new Date(y, m - 1, d + days));
+}
