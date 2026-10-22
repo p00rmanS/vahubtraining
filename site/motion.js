@@ -23,10 +23,17 @@ const Motion = (() => {
     };
     const fallback = setTimeout(run, 300);
     try {
-      document.startViewTransition(() => {
+      const viewTransition = document.startViewTransition(() => {
         clearTimeout(fallback);
         run();
       });
+      // A newer navigation skips the older transition; that is not an error.
+      for (const promise of [
+        viewTransition.ready,
+        viewTransition.finished,
+        viewTransition.updateCallbackDone,
+      ])
+        promise.catch(() => {});
     } catch {
       clearTimeout(fallback);
       run();

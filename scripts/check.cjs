@@ -51,7 +51,7 @@ for (const filename of scripts)
   )
     vm.runInContext(read(filename), context);
 const records = vm.runInContext("lessons", context);
-assert.equal(records.length, 104);
+assert.equal(records.length, 112);
 assert.equal(new Set(records.map((r) => r.id)).size, records.length);
 for (const r of records) {
   assert(
@@ -83,6 +83,40 @@ assert.equal(
 );
 for (const exam of vm.runInContext("exams", context))
   assert(exam.taglish, `Exam missing Taglish: ${exam.id}`);
+/* ---- Structural integrity of every lesson ---- */
+const moduleList = vm.runInContext("modules", context);
+moduleList.forEach((module, i) => {
+  const inModule = records.filter((r) => r.mi === i);
+  assert(inModule.length > 0, `Empty module ${i}`);
+  inModule.forEach((r, j) =>
+    assert.equal(r.li, j, `Lesson order in module ${i}`),
+  );
+});
+for (const r of records) {
+  assert.equal(r.options.length, 3, `Options: ${r.id}`);
+  assert.equal(new Set(r.options).size, 3, `Duplicate options: ${r.id}`);
+  assert(r.answer >= 0 && r.answer < 3, `Answer index: ${r.id}`);
+  for (const key of [
+    "teach",
+    "example",
+    "exercise",
+    "mistake",
+    "question",
+    "explanation",
+    "taglish",
+  ])
+    assert(
+      typeof r[key] === "string" &&
+        r[key].trim() &&
+        !/undefined|\[object/.test(r[key]),
+      `Bad ${key}: ${r.id}`,
+    );
+  assert(
+    r.ready.every((item) => item.trim()),
+    `Empty readiness item: ${r.id}`,
+  );
+}
+
 const TAGLISH_KEYS = ["example", "exercise", "mistake", "tips", "why"];
 for (const r of records) {
   assert(r.tl, `Missing Taglish companions: ${r.id}`);
@@ -138,6 +172,37 @@ assert(
   "app.js target=_blank needs noopener",
 );
 assert(!fs.existsSync(path.join(site, ".env")));
+
+/* ---- A blocked or throwing localStorage must not stop the app ---- */
+{
+  const blocked = vm.createContext({
+    localStorage: {
+      getItem() {
+        throw new Error("blocked");
+      },
+      setItem() {
+        throw new Error("blocked");
+      },
+    },
+    window: { addEventListener() {} },
+    document: { dispatchEvent() {} },
+    CustomEvent: class {},
+  });
+  blocked.window.localStorage = blocked.localStorage;
+  vm.runInContext(
+    ["lessons", "scenarios", "exams"]
+      .map(
+        (name) =>
+          `var ${name} = ${JSON.stringify(vm.runInContext(name, context))};`,
+      )
+      .join(String.fromCharCode(10)) +
+      read("util.js") +
+      read("store.js"),
+    blocked,
+  );
+  assert.equal(vm.runInContext("state.done.length", blocked), 0);
+  assert.equal(vm.runInContext("save()", blocked), false);
+}
 
 /* ---- Storage validation: hostile saved data and imports must be neutralised ---- */
 const storage = new Map();
@@ -271,5 +336,5 @@ assert.deepEqual(roundTrip.done, ["0-0"]);
 assert.equal(roundTrip.pace, "24");
 
 console.log(
-  "Passed: 104 lessons, scripts, CSP (no unsafe-inline), storage validation and import, reduced-motion and dark-mode CSS, and secret patterns.",
+  "Passed: 112 lessons, scripts, CSP (no unsafe-inline), storage validation and import, reduced-motion and dark-mode CSS, and secret patterns.",
 );

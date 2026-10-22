@@ -1,6 +1,6 @@
 # VA Hub Training
 
-A static, responsive virtual assistant academy with 104 English lessons, Taglish explanations, pro tips, exercises, quizzes, templates, and client simulations.
+A static, responsive virtual assistant academy with 112 English lessons, Taglish explanations, pro tips, exercises, quizzes, templates, and client simulations.
 
 ## Run locally
 

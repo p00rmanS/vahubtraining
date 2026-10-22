@@ -661,6 +661,7 @@ pre {
 }
 .cell {
   position: relative;
+  cursor: pointer;
   aspect-ratio: 1;
   border: 1.5px solid var(--ink);
   background: var(--paper);

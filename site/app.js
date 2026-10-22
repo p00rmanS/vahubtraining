@@ -93,7 +93,7 @@ function tocRow(module, index) {
 function stampCard() {
   return `<aside class="stamp-card reveal" data-vars="i:2" aria-label="Course stamp card">
     <div class="stamp-head"><span>Stamp card</span><strong>${completedCount()} / ${lessons.length}</strong></div>
-    <div class="cells" aria-hidden="true">${lessons.map((l, i) => `<a class="cell pop ${isDone(l.id) ? "done" : ""}" href="#lesson/${l.id}" tabindex="-1" title="${esc(l.title)}" data-vars="i:${i}"></a>`).join("")}</div>
+    <div class="cells" aria-hidden="true">${lessons.map((l, i) => `<span class="cell pop ${isDone(l.id) ? "done" : ""}" data-action="open-lesson" data-id="${l.id}" title="${esc(l.title)}" data-vars="i:${i}"></span>`).join("")}</div>
     <p class="stamp-foot meta">One square per lesson. Finish a lesson to stamp it.</p>
   </aside>`;
 }
@@ -501,7 +501,7 @@ function roadmap() {
   app.innerHTML = `${pageIntro(
     "A plan you can follow.",
     "Use 12 weeks as a flexible guide. Move forward when your practice meets the checks, rather than when a date passes.",
-    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–27 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
+    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–29 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
   )}
   <ol class="timeline">${weeks
     .map(
