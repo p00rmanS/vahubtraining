@@ -74,6 +74,8 @@ const PAGE_TAGLISH = {
     "Simpleng paliwanag ng mga salitang madalas mong maririnig sa VA work. Balikan ito kapag may hindi ka maintindihan.",
   "Your portfolio tracker.":
     "Bawat lesson ay may gawang puwedeng ipakita sa client. I-tick kapag tapos, na-check, at walang private na impormasyon.",
+  "Real-life tips from the field.":
+    "Mga praktikal na payo mula sa araw-araw na VA work. Basahin ang isa kada araw at subukan sa totoong trabaho mo.",
   "Mock paid trials.":
     "Madalas may maikling bayad na trial ang client. Mag-practice sa loob ng isang oras, isulat ang sagot, at maging tapat sa pag-score. Pasado ang 80% pataas at walang zero sa critical na criteria.",
 };
@@ -244,6 +246,49 @@ function sessionNext() {
   rerender("h1");
 }
 
+/* ---------- Real-life tips ---------- */
+
+let tipFilter = "all";
+
+/** One tip per local calendar day, the same for everyone that day. */
+function tipOfTheDay() {
+  const now = new Date();
+  const dayNumber = Math.floor(
+    new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() /
+      864e5,
+  );
+  return tips[dayNumber % tips.length];
+}
+
+function tipCard() {
+  const tip = tipOfTheDay();
+  return `<section class="tip-of-day reveal">
+      <p class="kicker">Real-life tip of the day · ${esc(tip.cat)}</p>
+      <h2>${esc(tip.title)}</h2>
+      <p>${esc(tip.tip)}</p>
+      ${tl(tip.taglish)}
+      <div class="toolbar"><a class="button" href="#tips">More real-life tips</a></div>
+    </section>`;
+}
+
+function tipsPage() {
+  const shown = tips.filter((t) => tipFilter === "all" || t.cat === tipFilter);
+  const chip = (value, label) =>
+    `<button data-action="tip-filter" data-id="${esc(value)}" aria-pressed="${tipFilter === value}">${esc(label)}</button>`;
+  app.innerHTML = `${pageIntro(
+    "Real-life tips from the field.",
+    "Short, practical habits that working virtual assistants use every day. Try one a day and keep the ones that fit.",
+  )}
+    <div class="chips" role="group" aria-label="Filter tips by topic">${chip("all", "All")}${tipCategories.map((c) => chip(c, c)).join("")}</div>
+    <p class="meta" role="status">${shown.length} tip${shown.length === 1 ? "" : "s"}</p>
+    <div class="tip-grid">${shown
+      .map(
+        (t, i) =>
+          `<article class="tip-card reveal" data-vars="i:${i % 6}"><span class="pill">${esc(t.cat)}</span><h3>${esc(t.title)}</h3><p>${esc(t.tip)}</p>${tl(t.taglish)}</article>`,
+      )
+      .join("")}</div>`;
+}
+
 function bestExamPercent() {
   const percents = exams
     .map((exam) => examSummary(exam))
@@ -329,6 +374,7 @@ function home() {
       <div class="toolbar"><button class="cta" data-action="open-lesson" data-id="${next.id}">${started ? "Continue learning" : "Start lesson 1"}${ICONS.arrow}</button></div>
     </section>
     ${sessionCard()}
+    ${tipCard()}
     ${statsAndBadges()}
     <div class="section-head reveal" id="contents">
       <h2>Contents</h2>
@@ -501,7 +547,7 @@ function roadmap() {
   app.innerHTML = `${pageIntro(
     "A plan you can follow.",
     "Use 12 weeks as a flexible guide. Move forward when your practice meets the checks, rather than when a date passes.",
-    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–29 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
+    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–31 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
   )}
   <ol class="timeline">${weeks
     .map(
@@ -655,6 +701,7 @@ const ROUTES = {
   learn: { view: home, title: "Learning path" },
   roadmap: { view: roadmap, title: "12-week roadmap" },
   session: { view: sessionPage, title: "Daily review" },
+  tips: { view: tipsPage, title: "Real-life tips" },
   portfolio: { view: portfolioPage, title: "Portfolio tracker" },
   exam: { view: examPage, title: "Mock trials" },
   library: { view: library, title: "Template library" },
@@ -868,6 +915,10 @@ const ACTIONS = {
       toast("Notes saved on this browser");
       setSaveStatus("Saved on this browser");
     } else toast("Browser storage unavailable. Export your progress.");
+  },
+  "tip-filter": (el) => {
+    tipFilter = el.dataset.id;
+    rerender(`[data-action="tip-filter"][data-id="${tipFilter}"]`);
   },
   "start-session": () => {
     session = null;
