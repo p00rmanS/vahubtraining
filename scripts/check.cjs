@@ -47,11 +47,12 @@ for (const filename of scripts)
     filename.startsWith("course") ||
     filename === "mentoring.js" ||
     filename.startsWith("taglish") ||
-    filename === "exams.js"
+    filename === "exams.js" ||
+    filename === "tips.js"
   )
     vm.runInContext(read(filename), context);
 const records = vm.runInContext("lessons", context);
-assert.equal(records.length, 112);
+assert.equal(records.length, 120);
 assert.equal(new Set(records.map((r) => r.id)).size, records.length);
 for (const r of records) {
   assert(
@@ -117,6 +118,21 @@ for (const r of records) {
   );
 }
 
+const tipList = vm.runInContext("tips", context);
+const tipCats = vm.runInContext("tipCategories", context);
+assert(tipList.length >= 30, "Expected at least 30 real-life tips");
+for (const tip of tipList) {
+  assert(tipCats.includes(tip.cat), `Unknown tip category: ${tip.cat}`);
+  assert(
+    tip.title && tip.tip.length > 40 && tip.taglish.length > 40,
+    `Incomplete tip: ${tip.title}`,
+  );
+}
+for (const cat of tipCats)
+  assert(
+    tipList.some((t) => t.cat === cat),
+    `No tips in ${cat}`,
+  );
 const TAGLISH_KEYS = ["example", "exercise", "mistake", "tips", "why"];
 for (const r of records) {
   assert(r.tl, `Missing Taglish companions: ${r.id}`);
@@ -336,5 +352,5 @@ assert.deepEqual(roundTrip.done, ["0-0"]);
 assert.equal(roundTrip.pace, "24");
 
 console.log(
-  "Passed: 112 lessons, scripts, CSP (no unsafe-inline), storage validation and import, reduced-motion and dark-mode CSS, and secret patterns.",
+  "Passed: 120 lessons, scripts, CSP (no unsafe-inline), storage validation and import, reduced-motion and dark-mode CSS, and secret patterns.",
 );

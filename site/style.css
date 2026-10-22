@@ -1833,3 +1833,68 @@ dd {
   padding: 0;
   border: 0;
 }
+
+/* ---------- 11. Real-life tips ---------- */
+.tip-of-day {
+  margin: 8px 0 28px;
+  padding: 24px 28px;
+  background: var(--mango-soft);
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+.tip-of-day h2 {
+  margin-bottom: 8px;
+}
+.tip-of-day p {
+  font: 1.05rem/1.7 var(--serif);
+}
+.tip-of-day .tl {
+  background: var(--card);
+}
+.tip-of-day .toolbar {
+  margin-bottom: 0;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+.chips button {
+  min-height: 40px;
+  padding: 6px 16px;
+  border-radius: 99px;
+  box-shadow: none;
+  font-size: 0.86rem;
+}
+.chips button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.tip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 40px;
+}
+.tip-card {
+  padding: 20px 22px;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--shadow);
+}
+.tip-card h3 {
+  margin: 10px 0 6px;
+  font: 800 1.1rem/1.3 var(--sans);
+}
+.tip-card p {
+  font: 1rem/1.7 var(--serif);
+}
+.tip-card .tl {
+  margin-bottom: 0;
+}
+@media (max-width: 1050px) {
+  .tip-grid {
+    grid-template-columns: 1fr;
+  }
+}
