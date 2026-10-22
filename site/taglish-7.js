@@ -2,7 +2,7 @@
 Object.assign(taglishExtra, {
   "26-0": {
     example:
-      'Ang inbox ng fictional bakery ay may 60 mensahe kada araw. Gumawa ang VA ng labels, nagdagdag ng filters para sa supplier newsletter at resibo, at tinest ang bawat isa sa sampung lumang mensahe. May isang filter na makakaitim sana ng refund request dahil may salitang "receipt", kaya ginawa itong tiyak sa address ng nagpadala. Sumulat din ang VA ng dalawang saved reply para sa pickup questions at ipina-approve ito.',
+      'Ang inbox ng fictional bakery ay may 60 mensahe kada araw. Gumawa ang VA ng labels, nagdagdag ng filters para sa supplier newsletter at resibo, at tinest ang bawat isa sa sampung lumang mensahe. May isang filter na makapagtago sana ng refund request dahil may salitang "receipt", kaya ginawa itong tiyak sa address ng nagpadala. Sumulat din ang VA ng dalawang saved reply para sa pickup questions at ipina-approve ito.',
     exercise:
       "Magdisenyo ng label set at tatlong filter para sa practice inbox. Sa bawat filter, pangalanan ang mensaheng hindi dapat mahuli nito at ipaliwanag ang test na gagawin mo muna.",
     mistake:
