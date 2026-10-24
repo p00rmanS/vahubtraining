@@ -406,7 +406,7 @@ function home() {
         <button data-action="import">Import</button>
         <button class="quiet" data-action="reset">Reset</button>
       </div>
-      <input type="file" id="import-file" accept="application/json,.json" hidden>
+      <input type="file" id="import-file" aria-label="Choose a progress file to import" accept="application/json,.json" hidden>
     </section>`.replace(" style-free", "");
   filterLessons();
 }
@@ -525,7 +525,7 @@ function lesson(id) {
         <section class="pro-tips" aria-labelledby="tips-title"><h2 id="tips-title">Pro tips from your mentor</h2><ul>${l.proTips.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>${tl(l.tl?.tips)}</section>
         ${clientExpectations(l)}
         <div class="callout"><h3>Worked example</h3><p>${esc(l.example)}</p>${tl(l.tl?.example)}</div>
-        ${l.deepDive ? `<section class="deep-dive"><h2><span class="sec-no">02</span>Detailed walkthrough</h2>${l.deepDive.map(([heading, text]) => `<h3>${esc(heading)}</h3><p>${esc(text)}</p>`).join("")}</section>` : ""}
+        ${l.deepDive ? `<section class="deep-dive"><h2><span class="sec-no">02</span>Detailed walkthrough</h2>${l.deepDive.map(([heading, text]) => `<h3>${esc(heading)}</h3><p>${esc(text)}</p>`).join("")}${tl(l.tl?.deep)}</section>` : ""}
         <h2><span class="sec-no">03</span>Try it step by step</h2>
         <ol class="steps">${l.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
         ${lessonPractice(l)}
@@ -547,7 +547,7 @@ function roadmap() {
   app.innerHTML = `${pageIntro(
     "A plan you can follow.",
     "Use 12 weeks as a flexible guide. Move forward when your practice meets the checks, rather than when a date passes.",
-    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–33 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
+    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–34 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
   )}
   <ol class="timeline">${weeks
     .map(
@@ -965,9 +965,12 @@ const ACTIONS = {
       root.dataset.theme === "dark" ||
       (!root.dataset.theme &&
         matchMedia("(prefers-color-scheme: dark)").matches);
-    root.dataset.theme = dark ? "light" : "dark";
+    const next = dark ? "light" : "dark";
+    Motion.transition(() => {
+      root.dataset.theme = next;
+    });
     try {
-      localStorage.setItem("va-academy-theme", root.dataset.theme);
+      localStorage.setItem("va-academy-theme", next);
     } catch {
       /* Theme still applies for this visit. */
     }
