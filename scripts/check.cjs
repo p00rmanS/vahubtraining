@@ -49,7 +49,8 @@ for (const filename of scripts)
     filename.startsWith("taglish") ||
     filename === "exams.js" ||
     filename === "tips.js" ||
-    filename.startsWith("deepdive")
+    filename.startsWith("deepdive") ||
+    filename.startsWith("lessontips")
   )
     vm.runInContext(read(filename), context);
 const records = vm.runInContext("lessons", context);
@@ -147,6 +148,14 @@ for (const r of records)
     typeof r.tl.deep === "string" && r.tl.deep.length > 40,
     `Missing Taglish walkthrough summary: ${r.id}`,
   );
+for (const r of records) {
+  assert(
+    Array.isArray(r.fieldTip) &&
+      r.fieldTip.length === 2 &&
+      r.fieldTip.every((t) => typeof t === "string" && t.length > 40),
+    `Missing real-life lesson tip (English and Taglish): ${r.id}`,
+  );
+}
 const TAGLISH_KEYS = ["example", "exercise", "mistake", "tips", "why"];
 for (const r of records) {
   assert(r.tl, `Missing Taglish companions: ${r.id}`);

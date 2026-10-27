@@ -16,7 +16,7 @@ Open http://localhost:8765. Use Left/Right arrow keys or the fixed Previous/Next
 
 ## Features
 
-Lessons with Taglish explanations and pro tips, quizzes and readiness checks, a portfolio tracker for every lesson's deliverable, two timed mock paid trials with a pass rule (80% and no zero on critical criteria), a Real-life tips page with a tip of the day, a daily review session that quizzes you on finished lessons with spaced repetition, a study streak with achievements, light and dark themes, and progress export and import. All progress stays in the browser.
+Lessons with Taglish explanations and pro tips, quizzes and readiness checks, a portfolio tracker for every lesson's deliverable, four timed mock paid trials (orders and inbox, executive support, e-commerce, confidential office), a real-life tip inside every lesson with a pass rule (80% and no zero on critical criteria), a Real-life tips page with a tip of the day, a daily review session that quizzes you on finished lessons with spaced repetition, a study streak with achievements, light and dark themes, and progress export and import. All progress stays in the browser.
 
 ## Source structure
 

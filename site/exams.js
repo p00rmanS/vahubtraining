@@ -108,4 +108,119 @@ Option 1: Launch on the 12th with a smaller menu. Option 2: Launch on the 20th w
     ],
     key: "Conflicts: Monday supplier meeting overlaps the investor call from 9:30 to 10:00 Pacific, and the fixed investor call stays, so propose moving the supplier meeting (for example 10:30 Pacific, which is 1:30 AM next day in Manila, so also offer an alternative that works for the supplier and ask approval); Tuesday dentist overlaps the team review from 14:30 to 15:00 and is personal, so ask the founder which to move without exposing the reason. Minutes: launch date is not decided (maybe the 20th unless the supplier cannot deliver); action: Ana checks with the supplier by Wednesday; budget about 2k is unconfirmed and should be verified with Ben; next meeting date is unspecified. Brief: Option 1 is faster with less risk to date but a smaller menu; Option 2 keeps the full menu but depends on supplier confirmation by Wednesday. Recommend deciding after Wednesday's confirmation or choosing Option 1 if the founder prioritizes date certainty, framed as a recommendation for the founder to approve.",
   },
+  {
+    id: "trial-ecommerce",
+    title: "E-commerce operations trial",
+    minutes: 60,
+    brief:
+      "A fictional bakery sells cookie boxes online. Audit the listings against the source, classify the order exceptions, draft one customer update, and plan a response to a marketplace notice. Do not promise refunds or reships; the owner decides those.",
+    taglish:
+      "Isang oras na trial para sa fictional na online bakery. I-audit ang mga listing laban sa source, i-classify ang mga order exception, mag-draft ng isang customer update, at magplano ng sagot sa abiso ng marketplace. Huwag mangako ng refund o reship; ang owner ang magpapasya.",
+    data: `SOURCE (approved)
+Cookie Box 12 | price 18 | pickup only | contains wheat, milk, eggs, nuts
+
+WEBSITE LISTING
+Title: "Cookie Box (nut-free!)" | price 18
+
+SOCIAL SHOP LISTING
+Title: "Cookies 12pc" | price 16 | "ships nationwide"
+
+ORDERS (rule: no tracking movement for 3 days = stuck)
+#201 shipped 4 days ago, no tracking movement
+#202 marked delivered, customer says it never arrived
+#203 customer photo shows a crushed box, cookies broken
+#204 on schedule
+
+MARKETPLACE NOTICE
+"Listing #55 may violate our rule on unsupported health claims. Fix within 7 days."
+Listing text: "Our oat cookies aid digestion."`,
+    tasks: [
+      "List every listing mismatch with the source and say which is a safety issue.",
+      "Classify orders #201 to #204 and draft one customer update for #202 without promising a remedy.",
+      "Write a short plan and a message to the owner about the marketplace notice.",
+    ],
+    criteria: [
+      [
+        "Accuracy",
+        "Finds the false nut-free claim (a safety error), the 16 versus 18 price mismatch, and the false shipping claim.",
+        true,
+      ],
+      [
+        "Authority and privacy",
+        "Does not promise refunds or reships, removes unsupported claims only with owner approval, and keeps customer details out of public replies.",
+        true,
+      ],
+      [
+        "Prioritization",
+        "Treats the nut-free claim as urgent and orders #201 to #203 as exceptions with #204 fine.",
+        false,
+      ],
+      [
+        "Communication",
+        "The customer update states what is known, what is being done, and when the next update comes.",
+        false,
+      ],
+      [
+        "Handoff and next steps",
+        "Asks the owner for decisions on the remedy, the claim removal, and the carrier claim, with dates.",
+        false,
+      ],
+    ],
+    key: "Mismatches: the website says nut-free but the source lists nuts, which is a serious safety error to report to the owner immediately; the social shop shows 16 instead of 18 and claims shipping although the product is pickup only. Orders: #201 stuck, #202 delivered but missing, #203 damaged, #204 on schedule. The #202 update says the tracking shows delivery, a carrier claim has been opened, and the next update is in two days, with no promise of a refund. The notice plan: the digestion claim has no evidence, so propose removing it with owner approval, document the change, and respond through the official portal within the seven days.",
+  },
+  {
+    id: "trial-office",
+    title: "Confidential office trial",
+    minutes: 60,
+    brief:
+      "A fictional professional office needs intake, a document check, and message triage handled safely. Use only the facts provided, collect only what is necessary, and give no professional advice.",
+    taglish:
+      "Isang oras na trial para sa fictional na propesyonal na opisina: intake, pag-check ng dokumento, at triage ng mensahe nang ligtas. Gamitin lang ang ibinigay na facts, kunin lang ang kailangan, at huwag magbigay ng propesyonal na payo.",
+    data: `INTAKE MESSAGE
+"Hi, I want a consultation about my contract dispute. My ID number is 123-45-6789 and I have 40,000 in the bank, if that helps."
+
+PROFESSIONAL AVAILABILITY (Pacific)
+Tuesday 10 AM-12 PM, Thursday 2-4 PM
+
+DOCUMENT CHECK
+Service Agreement v3 versus the approved template: payment term changed from 30 to 14 days (no one requested this). Client address in v3: "12 Pine Street"; intake record: "12 Pine St., Unit 2". File name: "agreement final FINAL.docx".
+
+MESSAGES
+A "Is my neighbor Mr. Cruz one of your clients?"
+B "Our closing is tomorrow and a problem was found today. Call me at 555-0142."
+C "Please email me a copy of my signed contract."`,
+    tasks: [
+      "Write a reply to the intake message and propose two slots, collecting only what is necessary.",
+      "List the findings from the document check and the message you would send to the professional.",
+      "Triage messages A to C and say what you would do for each.",
+    ],
+    criteria: [
+      [
+        "Accuracy",
+        "Spots the 30 to 14 day payment change, the missing Unit 2, and the poor file name, and offers real slots with the time zone.",
+        true,
+      ],
+      [
+        "Privacy and boundaries",
+        "Does not collect the ID number or bank balance, does not confirm or discuss other clients, gives no legal advice, and verifies identity before sending a contract.",
+        true,
+      ],
+      [
+        "Triage",
+        "Treats message B as urgent, A as a request for private information, and C as needing identity verification.",
+        false,
+      ],
+      [
+        "Communication",
+        "Replies are warm, clear, and say what happens next and when.",
+        false,
+      ],
+      [
+        "Handoff",
+        "Passes findings and questions to the professional with exact items and asks for confirmation before anything is sent.",
+        false,
+      ],
+    ],
+    key: "Intake reply: thank them, say the professional will discuss the matter, ask them not to send ID numbers or bank details by message, and offer Tuesday 10:00 or Thursday 2:00 PM Pacific. Document check: payment term changed from 30 to 14 days without a request (flag and hold), address missing Unit 2, and the file name should follow a pattern such as Client_ServiceAgreement_v3_DRAFT_date; the VA does not edit the wording. Triage: B is urgent and goes to the professional now through the agreed channel; A is declined (neither confirm nor deny any client) with a message taken; C needs the office's identity verification before any contract is sent and then goes to the professional or the approved system.",
+  },
 ];
