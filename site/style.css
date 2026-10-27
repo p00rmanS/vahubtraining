@@ -1897,3 +1897,20 @@ dd {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- 12. Real-life tip inside lessons ---------- */
+.field-tip {
+  margin: 26px 0;
+  padding: 18px 22px;
+  background: var(--card);
+  border: 2px dashed var(--red);
+}
+.field-tip .kicker {
+  margin-bottom: 6px;
+}
+.field-tip p {
+  font: 1.02rem/1.75 var(--serif);
+}
+.field-tip .tl {
+  margin-bottom: 0;
+}

@@ -523,6 +523,7 @@ function lesson(id) {
         <p>${esc(l.teach)}</p>
         <section class="taglish-explanation" aria-labelledby="taglish-title"><h2 id="taglish-title"><span class="tl-tag">Taglish</span>Explanation</h2><p lang="fil">${esc(l.taglish)}</p></section>
         <section class="pro-tips" aria-labelledby="tips-title"><h2 id="tips-title">Pro tips from your mentor</h2><ul>${l.proTips.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>${tl(l.tl?.tips)}</section>
+        ${l.fieldTip ? `<aside class="field-tip" aria-label="Real-life tip"><p class="kicker">Real-life tip</p><p>${esc(l.fieldTip[0])}</p>${tl(l.fieldTip[1])}</aside>` : ""}
         ${clientExpectations(l)}
         <div class="callout"><h3>Worked example</h3><p>${esc(l.example)}</p>${tl(l.tl?.example)}</div>
         ${l.deepDive ? `<section class="deep-dive"><h2><span class="sec-no">02</span>Detailed walkthrough</h2>${l.deepDive.map(([heading, text]) => `<h3>${esc(heading)}</h3><p>${esc(text)}</p>`).join("")}${tl(l.tl?.deep)}</section>` : ""}
