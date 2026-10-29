@@ -548,7 +548,7 @@ function roadmap() {
   app.innerHTML = `${pageIntro(
     "A plan you can follow.",
     "Use 12 weeks as a flexible guide. Move forward when your practice meets the checks, rather than when a date passes.",
-    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–34 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
+    `<div class="toolbar"><label for="pace">Study pace</label><select id="pace"><option value="12" ${slow ? "" : "selected"}>12 weeks · about 5–7 hours a week</option><option value="24" ${slow ? "selected" : ""}>24 weeks · one hour, three days a week</option></select></div><p class="meta">At one hour a day, you can use the 12-week plan, taking extra time when needed. The slower plan splits each stage over two weeks. These are study estimates. Modules 9–39 add deeper practice: allow one or more extra weeks per module and repeat difficult tasks until the checks pass.</p>`,
   )}
   <ol class="timeline">${weeks
     .map(
