@@ -27,7 +27,7 @@ Object.assign(taglishExtra, {
       "Buuin ang practice na inventory sheet, magtakda ng reorder point gamit ang formula, mag-log ng pagkakaiba sa bilang, at isulat ang reorder list.",
     mistake:
       "Ang pagbabago ng bilang para tumugma sa sheet ay nagtatago ng pagkalugi at pagkasira na dapat malaman ng owner.",
-    tips: "Kunan ng litrato ang shelf tuwing magbibilang at i-save na may petsa; nagbibigay ito ng sagot kung ano talaga ang naroon. Magdagdag ng column na \"why it matters\" para sa kritikal na item; mas mabilis ito mag-aprub ng owner kaysa sa numero lang.",
+    tips: 'Kunan ng litrato ang shelf tuwing magbibilang at i-save na may petsa; nagbibigay ito ng sagot kung ano talaga ang naroon. Magdagdag ng column na "why it matters" para sa kritikal na item; mas mabilis ito mag-aprub ng owner kaysa sa numero lang.',
     why: "Impormasyon ang pagkakaiba sa bilang. Pinananatiling tapat ng pagtatala ang kasaysayan at natutulungan ang owner na hanapin ang sanhi tulad ng pagkasira o pagnanakaw.",
   },
 });
