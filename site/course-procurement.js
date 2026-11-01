@@ -101,8 +101,7 @@ const procurementLessons = [
       "Store no passwords in the sheet",
       "Act only on written decisions and keep confirmations",
     ],
-    tools:
-      "A spreadsheet, the password manager, and a calendar for reminders.",
+    tools: "A spreadsheet, the password manager, and a calendar for reminders.",
     taglish:
       "Tahimik na nag-iipon ang mga subscription: software, membership, at domain na nagre-renew buwan-buwan o taon-taon, kadalasan kahit hindi na ginagamit. Ang subscription audit ay simpleng routine na puwedeng gawin ng VA kada quarter. Magsimula sa listahang may ebidensya: statement, resibo, at email ng mga resibo. Itala ang pangalan, gamit, owner, mga gumagamit, plan at presyo, billing cycle, petsa ng renewal, paano mag-cancel, at kung nasaan ang login. Huwag maglagay ng password sa sheet; ituro ang password manager. I-review kasama ang owner: ginagamit ba, may kapareho bang tool, sapat ba ang mas maliit na plan, at malapit na ba ang renewal. I-sort ayon sa petsa ng renewal at magtakda ng paalala nang hindi bababa sa tatlumpung araw bago ang malalaking taunang renewal, dahil maikli minsan ang cancellation window. Huwag mag-cancel o mag-downgrade nang walang nakasulat na utos ng client; puwedeng mawala ang data o ma-lock out ang team. Bago mag-cancel, i-export ang data at tiyaking walang umaasa pa rito. Pagkatapos, itala ang bagong status, ang natipid, at ang petsa, at magbahagi ng maikling buod ng kabuuan. Gumamit ng shared o client-owned na account, hindi personal, para hindi mawala ang access kapag umalis ang isang tao.",
     proTips: [
@@ -165,8 +164,7 @@ const procurementLessons = [
       "Count on a schedule and log differences",
       "Send reorder lists for approval",
     ],
-    tools:
-      "A spreadsheet, a monthly reminder, and the vendor links.",
+    tools: "A spreadsheet, a monthly reminder, and the vendor links.",
     taglish:
       "Madalas maubusan ang maliliit na negosyo ng mahahalagang gamit sa maling oras, o bumibili ng sobra. Puwedeng magtago ang VA ng magaan na inventory sa spreadsheet. Piliin muna kung ano ang itatala: mga supply na nauubos tulad ng packaging, label, at papel, at mga kagamitang dapat mabilang tulad ng laptop at camera. Gumamit ng sheet na may isang row bawat item: pangalan, lokasyon, unit, dami, reorder point, vendor, karaniwang order quantity, lead time sa araw, huling order, at may-ari. Ang reorder point ay ang dami kung kailan oorder muli; simpleng paraan ang lingguhang gamit na i-multiply sa lead time sa linggo, dagdag ng maliit na buffer. Magbilang sa takdang iskedyul, tulad ng huling Biyernes ng buwan, at ihambing sa sheet; itala ang pagkakaiba at dahilan sa halip na tahimik na ayusin ang numero. Para sa kagamitan, itala ang serial number, kung sino ang may hawak, petsa ng pagbili, at katapusan ng warranty, at i-log kapag inilipat. Pagkatapos mag-update, magpadala ng maikling listahan ng mga item sa o mas mababa sa reorder point na may mungkahing dami at link ng vendor; ang client ang nag-aaprub ng order. Huwag maglagay ng sensitibong detalye o access code sa inventory. Kada quarter, i-review ang mabagal na item at sabihin ang hindi na ginagamit. Panatilihing simple para maipasa sa iba sa sampung minuto.",
     proTips: [
