@@ -1914,3 +1914,156 @@ dd {
 .field-tip .tl {
   margin-bottom: 0;
 }
+
+/* ---------- 11. Learning tools: history, readiness, showcase, memory ---------- */
+.history {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 18px;
+  padding: 0;
+  list-style: none;
+}
+.history li {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr 3.2rem 4.5rem;
+  align-items: center;
+  gap: 12px;
+}
+.history .meter {
+  margin-top: 0;
+}
+.history-date {
+  font: 600 0.82rem/1 var(--mono);
+  color: var(--muted);
+}
+.meter-fill.warn {
+  background: var(--mango);
+}
+.ready-list {
+  display: grid;
+  gap: 14px;
+  margin: 20px 0 28px;
+  padding: 0;
+  list-style: none;
+}
+.ready-row.met {
+  border-color: var(--green);
+}
+.ready-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.weak-list {
+  display: grid;
+  gap: 6px;
+  padding-left: 1.2rem;
+}
+.technique-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 20px 0 32px;
+}
+.technique h3 {
+  margin: 10px 0 8px;
+}
+.memory-lock {
+  margin: 28px 0;
+  padding: 20px 22px;
+  background: var(--mango-soft);
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--shadow);
+}
+.memory-lock h2 {
+  margin-top: 0;
+}
+.hook-line {
+  display: grid;
+  gap: 6px;
+}
+.hook {
+  font: 900 clamp(1.15rem, 3.4vw, 1.6rem) / 1.25 var(--display);
+  letter-spacing: -0.01em;
+}
+.showcase {
+  margin: 24px 0;
+  padding: 28px;
+  background: #fff;
+  color: #1a1814;
+  border: 2px solid var(--ink);
+}
+.showcase .meta {
+  color: #4a4538;
+}
+.showcase h2,
+.showcase h3,
+.showcase h4 {
+  color: #1a1814;
+}
+.showcase-piece {
+  margin: 0 0 14px;
+  padding: 12px 0 0;
+  border-top: 1px solid #cfc6ae;
+  break-inside: avoid;
+}
+.showcase-piece pre {
+  white-space: pre-wrap;
+}
+@media (max-width: 560px) {
+  .history li {
+    grid-template-columns: 1fr 3.2rem;
+  }
+  .history .meter,
+  .history li > .meta {
+    grid-column: 1 / -1;
+  }
+}
+@media print {
+  .no-print,
+  .page-intro,
+  .tl,
+  .back {
+    display: none !important;
+  }
+  .showcase {
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
+/* Link-styled buttons share the button look, including the arrow icon. */
+a.button {
+  text-decoration: none;
+}
+a.button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: translate 0.25s var(--ease);
+}
+a.button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--shadow);
+  background: var(--mango-soft);
+}
+a.button.cta {
+  padding: 12px 22px;
+  font-size: 1rem;
+  background: var(--red);
+  color: var(--on-red);
+}
+a.button.cta:hover {
+  background: var(--red);
+  filter: brightness(1.08);
+}
+a.button.cta:hover svg {
+  translate: 4px 0;
+}
