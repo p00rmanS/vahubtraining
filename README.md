@@ -26,6 +26,8 @@ Lessons with Taglish explanations and pro tips, quizzes and readiness checks, a 
 - `site/store.js`: persistence, validation of saved and imported data, export and import.
 - `site/motion.js`: view transitions, reveal-on-scroll, count-ups, progress rings, and confetti. Everything respects `prefers-reduced-motion`.
 - `site/app.js`: routing, views, and a single `data-action` event dispatcher.
+- `site/learning-tools.js`: trial score history, readiness check, weak-spot tracking, printable portfolio showcase, and memory aids.
+- `site/sw.js`, `site/offline.js`: optional offline cache (HTTPS only), same-origin GET requests.
 - `site/lesson-navigation.js`: fixed previous and next bar plus arrow-key shortcuts.
 - `site/course*.js`, `site/mentoring.js`: lesson, simulation, and Taglish content, appended with stable IDs.
 - `site/exams.js`: timed mock paid-trial assessments with self-scoring criteria.

@@ -16,6 +16,8 @@ const NOTE_KEYS = new Set([
 ]);
 const examById = new Map(exams.map((exam) => [exam.id, exam]));
 const MAX_ACTIVITY_DAYS = 400;
+const MAX_HISTORY = 120;
+const MAX_MISSES = 9;
 
 const isPlainObject = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
@@ -84,6 +86,36 @@ function sanitizeState(raw) {
         DAY_KEY.test(value.due)
       )
         reviews[key] = { box: value.box, due: value.due };
+  const history = Array.isArray(source.history)
+    ? source.history
+        .filter(
+          (entry) =>
+            isPlainObject(entry) &&
+            examById.has(entry.id) &&
+            typeof entry.date === "string" &&
+            DAY_KEY.test(entry.date) &&
+            Number.isInteger(entry.percent) &&
+            entry.percent >= 0 &&
+            entry.percent <= 100,
+        )
+        .map((entry) => ({
+          id: entry.id,
+          date: entry.date,
+          percent: entry.percent,
+          passed: entry.passed === true,
+        }))
+        .slice(-MAX_HISTORY)
+    : [];
+  const misses = {};
+  if (isPlainObject(source.misses))
+    for (const [key, value] of Object.entries(source.misses))
+      if (
+        lessonById.has(key) &&
+        Number.isInteger(value) &&
+        value >= 1 &&
+        value <= MAX_MISSES
+      )
+        misses[key] = value;
   const activity = Array.isArray(source.activity)
     ? [
         ...new Set(
@@ -108,6 +140,8 @@ function sanitizeState(raw) {
       : [],
     exams: examResults,
     reviews,
+    history,
+    misses,
     activity,
     pace: source.pace === "24" ? "24" : "12",
     lastLesson: lessonById.has(source.lastLesson) ? source.lastLesson : null,

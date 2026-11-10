@@ -76,6 +76,12 @@ const PAGE_TAGLISH = {
     "Bawat lesson ay may gawang puwedeng ipakita sa client. I-tick kapag tapos, na-check, at walang private na impormasyon.",
   "Real-life tips from the field.":
     "Mga praktikal na payo mula sa araw-araw na VA work. Basahin ang isa kada araw at subukan sa totoong trabaho mo.",
+  "Are you ready for clients?":
+    "Simpleng check ng mga ugali at patunay na hinahanap ng client. Ito ay sarili mong learning record, hindi sertipikasyon.",
+  "Portfolio showcase.":
+    "Isang malinis na pahina ng mga natapos mong gawa para i-print o i-save bilang PDF sa mga proposal. Basahin ang bawat linya bago ibahagi.",
+  "Make it stick.":
+    "Mas mabilis kang matututo kung sinasanay mong alalahanin, hindi lang binabasa. Pitong ugali ito na batay sa pananaliksik tungkol sa memorya, at nakapaloob na sa academy na ito.",
   "Mock paid trials.":
     "Madalas may maikling bayad na trial ang client. Mag-practice sa loob ng isang oras, isulat ang sagot, at maging tapat sa pag-score. Pasado ang 80% pataas at walang zero sa critical na criteria.",
 };
@@ -116,7 +122,11 @@ let session = null;
 function dueLessons() {
   const today = dayKey();
   return lessons
-    .filter((l) => isDone(l.id) && (state.reviews[l.id]?.due ?? today) <= today)
+    .filter(
+      (l) =>
+        (isDone(l.id) || state.misses[l.id]) &&
+        (state.reviews[l.id]?.due ?? today) <= today,
+    )
     .sort((a, b) =>
       (state.reviews[a.id]?.due ?? "").localeCompare(
         state.reviews[b.id]?.due ?? "",
@@ -167,7 +177,7 @@ function emptySessionCard() {
 }
 
 function sessionCard() {
-  if (!completedCount()) return emptySessionCard();
+  if (!completedCount() && !weakLessons().length) return emptySessionCard();
   const due = dueLessons().length;
   const next = nextReviewDate();
   const ready = Math.min(due, SESSION_SIZE);
@@ -182,7 +192,7 @@ function sessionCard() {
 
 function sessionPage() {
   if (!session) startSession();
-  if (!completedCount()) {
+  if (!completedCount() && !weakLessons().length) {
     app.innerHTML = `${pageIntro("Daily review.", "A short session of questions from lessons you have finished.")}${emptySessionCard()}`;
     return;
   }
@@ -233,6 +243,7 @@ function sessionCheck() {
   session.answered = true;
   if (correct) session.correct++;
   recordReview(l.id, correct);
+  noteQuizResult(l.id, correct, { fromReview: true });
   persist();
   rerender('[data-action="session-next"]');
 }
@@ -536,6 +547,7 @@ function lesson(id) {
           <button data-action="check-quiz" data-id="${id}">Check answer</button>
           <div id="quiz-result" role="status">${quizVerdict(l, chosen)}</div>
         </section>
+        ${lessonMemory(l)}
         ${lessonReadiness(l, position)}
       </article>
     </div>`;
@@ -589,7 +601,7 @@ function portfolioPage() {
   app.innerHTML = `${pageIntro(
     "Your portfolio tracker.",
     "Every lesson ends with something you can show a client. Tick each piece when it is finished, checked, and free of private information.",
-    `<div class="progress-row"><p class="progress-count"><strong data-count="${done}">${done}</strong><span class="muted"> / ${lessons.length} pieces</span></p></div>${bar(ratio(done, lessons.length))}`,
+    `<div class="progress-row"><p class="progress-count"><strong data-count="${done}">${done}</strong><span class="muted"> / ${lessons.length} pieces</span></p></div>${bar(ratio(done, lessons.length))}<div class="toolbar"><a class="button cta" href="#showcase">Create printable showcase${ICONS.arrow}</a></div>`,
   )}${modules
     .map((module, mi) => {
       const items = lessons.filter((l) => l.mi === mi);
@@ -649,6 +661,7 @@ function examPage() {
       const summary = examSummary(exam);
       return `<section class="card sim reveal" id="${esc(exam.id)}"><span class="pill">${exam.minutes} minutes</span><h2>${esc(exam.title)}</h2><p>${esc(exam.brief)}</p>${tl(exam.taglish)}
         <div class="timer-row"><span class="timer" data-timer="${esc(exam.id)}" role="timer" aria-live="off">${exam.minutes}:00</span><button data-action="start-timer" data-id="${esc(exam.id)}">Start timer</button><button class="quiet" data-action="stop-timer" data-id="${esc(exam.id)}">Stop</button></div>
+        <h3>Your score history</h3><div id="history-${esc(exam.id)}">${examHistoryHtml(exam)}</div>
         <h3>Materials</h3><pre>${esc(exam.data)}</pre>
         <h3>Your tasks</h3><ol class="steps">${exam.tasks.map((t) => `<li>${esc(t)}</li>`).join("")}</ol>
         <label for="${key}">Your answer</label><textarea id="${key}" data-note="${key}" maxlength="${MAX_NOTE_LENGTH}">${esc(state.notes[key] || "")}</textarea>
@@ -701,6 +714,9 @@ function filterGlossary() {
 const ROUTES = {
   learn: { view: home, title: "Learning path" },
   roadmap: { view: roadmap, title: "12-week roadmap" },
+  ready: { view: readyPage, title: "Readiness check" },
+  memory: { view: memoryPage, title: "Make it stick" },
+  showcase: { view: showcasePage, title: "Portfolio showcase" },
   session: { view: sessionPage, title: "Daily review" },
   tips: { view: tipsPage, title: "Real-life tips" },
   portfolio: { view: portfolioPage, title: "Portfolio tracker" },
@@ -867,6 +883,7 @@ function checkQuiz(id) {
   }
   const choice = Number(picked.value);
   state.quizzes[id] = choice;
+  noteQuizResult(id, choice === l.answer);
   persist();
   app.querySelectorAll(".option").forEach((label, i) => {
     label.classList.remove("is-correct", "is-wrong");
@@ -945,6 +962,7 @@ const ACTIONS = {
     }
   },
   "check-quiz": (el) => checkQuiz(el.dataset.id),
+  "print-showcase": () => window.print(),
   "toggle-complete": (el) => toggleComplete(el.dataset.id),
   "copy-template": (el) => copyTemplate(Number(el.dataset.id)),
   export: exportProgress,
@@ -1017,14 +1035,20 @@ document.addEventListener("change", (event) => {
     const scores = [...examSummary(exam).scores];
     scores[Number(raw)] = t.value === "" ? null : Number(t.value);
     state.exams[id] = { scores, date: dayKey() };
+    recordExamHistory(exam);
     persist();
     $("#verdict-" + id).innerHTML = examVerdict(exam);
+    $("#history-" + id).innerHTML = examHistoryHtml(exam);
+    Motion.hydrate($("#history-" + id));
   } else if (t.dataset.skill !== undefined) {
     const i = Number(t.dataset.skill);
     state.skills = t.checked
       ? [...new Set([...state.skills, i])]
       : state.skills.filter((x) => x !== i);
     persist();
+  } else if (t.id === "showcase-notes") {
+    showcaseNotes = t.checked;
+    rerender("#showcase-notes");
   } else if (t.id === "lesson-picker") location.hash = "lesson/" + t.value;
   else if (t.id === "module-filter") filterLessons();
   else if (t.id === "pace") {

@@ -10,7 +10,10 @@ const html = read("index.html");
 const scripts = [...html.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1]);
 
 /* ---- Every shipped script is referenced, parses, and is free of risky patterns ---- */
-const shipped = fs.readdirSync(site).filter((f) => f.endsWith(".js"));
+// sw.js is loaded by service worker registration, not by a <script> tag.
+const shipped = fs
+  .readdirSync(site)
+  .filter((f) => f.endsWith(".js") && f !== "sw.js");
 assert.deepEqual(
   [...shipped].sort(),
   [...scripts].sort(),
@@ -353,6 +356,38 @@ const reviewState = clean(
   ),
 );
 assert.deepEqual(reviewState, { "0-0": { box: 3, due: "2026-10-20" } });
+const learningState = clean(
+  vm.runInContext(
+    `sanitizeState({
+      history: [
+        { id: "trial-orders", date: "2026-10-15", percent: 85, passed: true },
+        { id: "trial-orders", date: "2026-10-16", percent: 150, passed: true },
+        { id: "bogus", date: "2026-10-15", percent: 50 },
+        { id: "trial-orders", date: "soon", percent: 50 },
+        "nope",
+      ],
+      misses: { "0-0": 2, "0-1": 99, "0-2": 0, bogus: 1, "1-0": 1.5 },
+    })`,
+    store,
+  ),
+);
+assert.deepEqual(learningState.history, [
+  { id: "trial-orders", date: "2026-10-15", percent: 85, passed: true },
+]);
+assert.deepEqual(learningState.misses, { "0-0": 2 });
+assert.equal(
+  vm.runInContext(
+    "sanitizeState({history: 5, misses: []}).history.length",
+    store,
+  ),
+  0,
+);
+assert(fs.existsSync(path.join(site, "sw.js")), "sw.js is missing");
+assert(
+  !/eval\(|new Function|importScripts/.test(read("sw.js")),
+  "sw.js must not use dynamic code",
+);
+assert(csp.includes("worker-src 'self'"), "CSP must restrict workers");
 assert.equal(vm.runInContext('addDays("2026-10-31", 2)', store), "2026-11-02");
 assert.equal(vm.runInContext('addDays("2026-12-31", 1)', store), "2027-01-01");
 for (const exam of vm.runInContext("exams", context)) {
