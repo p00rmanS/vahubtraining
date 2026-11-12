@@ -57,7 +57,7 @@ for (const filename of scripts)
   )
     vm.runInContext(read(filename), context);
 const records = vm.runInContext("lessons", context);
-assert.equal(records.length, 191);
+assert.equal(records.length, 195);
 assert.equal(new Set(records.map((r) => r.id)).size, records.length);
 for (const r of records) {
   assert(
@@ -410,5 +410,5 @@ assert.deepEqual(roundTrip.done, ["0-0"]);
 assert.equal(roundTrip.pace, "24");
 
 console.log(
-  "Passed: 191 lessons, scripts, CSP (no unsafe-inline), storage validation and import, reduced-motion and dark-mode CSS, and secret patterns.",
+  "Passed: 195 lessons, scripts, CSP (no unsafe-inline), storage validation and import, reduced-motion and dark-mode CSS, and secret patterns.",
 );
